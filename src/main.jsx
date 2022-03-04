@@ -15,6 +15,7 @@ import Layout from './posts/Layout'
 import PostsList from './posts/List'
 import PostsCreate from './posts/Create'
 import PostsEdit from './posts/Edit'
+import PostsShow from './posts/Show'
 import PostsDelete from './posts/Delete'
 /** End Posts */
 
@@ -26,6 +27,7 @@ ReactDOM.render(
         <Route path="/posts" element={<Layout />}>
           <Route index element={<PostsList />} />
           <Route path="create" element={<PostsCreate />} />
+          <Route path=":id/show" element={<PostsShow />} />
           <Route path=":id/edit" element={<PostsEdit />} />
           <Route path=":id/delete" element={<PostsDelete />} />
         </Route>
