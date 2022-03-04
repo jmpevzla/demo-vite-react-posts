@@ -9,8 +9,14 @@ import {
 } from "react-router-dom";
 
 import App from './App'
+
+/** Begin Posts */
 import Layout from './posts/Layout'
 import PostsList from './posts/List'
+import PostsCreate from './posts/Create'
+import PostsEdit from './posts/Edit'
+import PostsDelete from './posts/Delete'
+/** End Posts */
 
 ReactDOM.render(
   <React.StrictMode>
@@ -19,6 +25,9 @@ ReactDOM.render(
         <Route path="/" element={<App />} />
         <Route path="/posts" element={<Layout />}>
           <Route index element={<PostsList />} />
+          <Route path="create" element={<PostsCreate />} />
+          <Route path=":id/edit" element={<PostsEdit />} />
+          <Route path=":id/delete" element={<PostsDelete />} />
         </Route>
       </Routes>
     </BrowserRouter>

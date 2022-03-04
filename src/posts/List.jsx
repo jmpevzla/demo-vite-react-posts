@@ -7,7 +7,7 @@ import { createQueryString, defaultLimit } from './utils'
 import { getPosts } from "./api";
 
 
-function App() {
+function List() {
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [sortOrder, setSortOrder] = useState({
@@ -276,4 +276,4 @@ function App() {
   )
 }
 
-export default App;
+export default List;
