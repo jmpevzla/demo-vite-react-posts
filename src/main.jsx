@@ -8,15 +8,17 @@ import {
   Route, 
 } from "react-router-dom";
 
-import Layout from './Layout'
 import App from './App'
+import Layout from './posts/Layout'
+import PostsList from './posts/List'
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<App />} />
+        <Route path="/" element={<App />} />
+        <Route path="/posts" element={<Layout />}>
+          <Route index element={<PostsList />} />
         </Route>
       </Routes>
     </BrowserRouter>
