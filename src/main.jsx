@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import 'sweetalert2/dist/sweetalert2.min.css'
 import './index.css'
 import {
   BrowserRouter,
