@@ -30,13 +30,14 @@ export function useGoBack() {
 
 const defMessage = 'Post Invalid'
 /**
- * 
- * @param {String | Number} id 
- * @param {(id: Number, data?: Object) => Promise<{ data: Object, err?: Object}>} apiPost 
- * @param {{mode: 'GET' | 'CHANGE', errInvalid?: String, err404?: String}} options
+ * Perform a api post request
+ * @param {(...args) => Promise<{ data: Object, err?: Object}>} apiPost 
+ * @param {{id: Number | String, mode: 'GET' | 'CHANGE' | 'CREATE', 
+ *  errInvalid?: String, err404?: String}} options
  * @returns 
  */
-export function usePost(id, apiPost, {
+export function usePost(apiPost, {
+  id = 0,
   mode = 'GET',
   errInvalid = defMessage,
   err404 = defMessage
@@ -69,7 +70,7 @@ export function usePost(id, apiPost, {
             case 'GET':
               await postInvalid(err.message)
               break;
-            case 'CHANGE':
+            case 'CHANGE', 'CREATE':
               await Swal.fire('Error', err.message, 'error')
               break;
           }  
@@ -80,8 +81,15 @@ export function usePost(id, apiPost, {
   }
 
   async function doPost(data = undefined) {
-    if (!await checkPostId(id)) return
-    const res = await apiPost(id, data)
+    let res = null
+    switch(mode) {
+      case 'CREATE':
+        res = await apiPost(data)
+        break;
+      default:
+        if (!await checkPostId(id)) return
+        res = await apiPost(id, data)
+    }
     if (!await checkPostResult(res)) return
     return res
   }

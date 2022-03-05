@@ -2,10 +2,11 @@ import React, { useEffect, useState, useCallback } from "react"
 import { useNavigate, Link } from 'react-router-dom'
 import classNames from "classnames"
 import { debounce } from 'lodash'
+import { Helmet } from 'react-helmet-async';
+import Swal from 'sweetalert2'
 import { useReload } from './hooks'
 import { createQueryString, defaultLimit } from './utils'
 import { getPosts } from "./api";
-import { Helmet } from 'react-helmet-async';
 
 function List() {
   const navigate = useNavigate()
@@ -121,7 +122,7 @@ function List() {
     }
   }
 
-  useEffect(() => {
+  async function load() {
     const queryString = window.location.search
     const params = new URLSearchParams(queryString)
     const search = params.get('q') || ''
@@ -150,18 +151,24 @@ function List() {
 
     setLimit(limit)
 
-    async function init() {
-      const [data, metadata] = await getPosts({
-        limit,
-        search,
-        sort,
-        order,
-        page
-      })
-      
-      setInfo({ data, metadata })
+    const [data, metadata, err] = await getPosts({
+      limit,
+      search,
+      sort,
+      order,
+      page
+    })
+
+    if (err) {
+      await Swal.fire('Error', err.message, 'error')
+      return
     }
-    init()
+    
+    setInfo({ data, metadata })
+  }
+
+  useEffect(() => {
+    load()
   }, [reload])
 
   return (
@@ -170,12 +177,19 @@ function List() {
         <title>My Posts!</title>
       </Helmet>
       <header className="mt-5 text-right">
-        <a className="
+        <button className="
+            bg-gray-600 text-white p-3 
+            rounded hover:bg-gray-400 mr-3
+            leading-5
+          " onClick={load}>
+            ↻
+        </button>
+        <Link className="
           bg-blue-600 text-white p-3 
           rounded hover:bg-blue-400
-          " href="create">
+          " to="create">
           Create a Post
-        </a>
+        </Link>
       </header>
 
       <div className="mt-3">

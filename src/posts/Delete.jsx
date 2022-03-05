@@ -14,8 +14,8 @@ function Delete() {
     author: 'AUTHOR'
   })
   const params = useParams()
-  const { doPost: doGetPost } = usePost(params.id, getPost)
-  const { doPost: doDeletePost } = usePost(params.id, deletePost, { mode: 'CHANGE' })
+  const { doPost: doGetPost } = usePost(getPost, { id: params.id })
+  const { doPost: doDeletePost } = usePost(deletePost, { id: params.id, mode: 'CHANGE' })
   const { goBack } = useGoBack()
 
   const title = 'Delete Post'

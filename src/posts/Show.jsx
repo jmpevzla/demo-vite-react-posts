@@ -13,7 +13,9 @@ function Show() {
     author: 'AUTHOR'
   })
   const params = useParams()
-  const { doPost: doGetPost } = usePost(params.id, getPost)
+  const { doPost: doGetPost } = usePost(getPost, {
+    id: params.id
+  })
   const title = `Show Post`
   useEffect(() => {
     async function init() {

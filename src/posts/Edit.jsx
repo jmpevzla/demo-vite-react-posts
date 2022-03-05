@@ -29,8 +29,8 @@ function Edit() {
   })
 
   const params = useParams()
-  const { doPost: doGetPost } = usePost(params.id, getPost)
-  const { doPost: doEditPost } = usePost(params.id, editPost, { mode: 'CHANGE' })
+  const { doPost: doGetPost } = usePost(getPost, { id: params.id })
+  const { doPost: doEditPost } = usePost(editPost, { id: params.id, mode: 'CHANGE' })
   const { goBack } = useGoBack()
 
   const title = 'Edit Post'

@@ -1,5 +1,4 @@
 import axios from 'axios'
-import Swal from 'sweetalert2'
 import { canGoToFirstPage, canGoToLastPage, canGoToNextPage,
   canGoToPage, canGoToPreviousPage, createQueryString,
   defaultLimit } from './utils'
@@ -93,9 +92,8 @@ export async function getPosts({
     ]
 
   } catch(err) {
-    Swal.fire('Error', err.message, 'error')
     console.error(err)
-    return [[], null]
+    return [[], null, err]
   }
 }
 
@@ -128,6 +126,19 @@ export async function deletePost(id) {
 export async function editPost(id, data) {
   try {
     const res = await axios.put(`/posts/${id}`, data)
+
+    return {
+      data: res.data
+    }
+  } catch(err) {
+    console.error(err)
+    return { data: null, err }
+  }
+}
+
+export async function createPost(data) {
+  try {
+    const res = await axios.post(`/posts`, data)
 
     return {
       data: res.data
