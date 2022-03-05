@@ -11,7 +11,7 @@ export function ShowLoading({ loading, children }) {
               width="100"
               color='green'
               ariaLabel='loading'
-            /> <span>Loading</span>
+            /> <span className="block text-center">Loading</span>
           </div>
         ) : children
       }

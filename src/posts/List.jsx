@@ -4,12 +4,14 @@ import classNames from "classnames"
 import { debounce } from 'lodash'
 import { Helmet } from 'react-helmet-async';
 import Swal from 'sweetalert2'
+import { ShowLoading } from './Components'
 import { useReload } from './hooks'
 import { createQueryString, defaultLimit } from './utils'
 import { getPosts } from "./api";
 
 function List() {
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
   const [search, setSearch] = useState('')
   const [sortOrder, setSortOrder] = useState({
     sort: '',
@@ -123,6 +125,7 @@ function List() {
   }
 
   async function load() {
+    setLoading(true)
     const queryString = window.location.search
     const params = new URLSearchParams(queryString)
     const search = params.get('q') || ''
@@ -158,13 +161,14 @@ function List() {
       order,
       page
     })
-
+    setLoading(false)
     if (err) {
       await Swal.fire('Error', err.message, 'error')
       return
     }
     
     setInfo({ data, metadata })
+        
   }
 
   useEffect(() => {
@@ -176,121 +180,204 @@ function List() {
       <Helmet>
         <title>My Posts!</title>
       </Helmet>
-      <header className="mt-5 text-right">
-        <button className="
-            bg-gray-600 text-white p-3 
-            rounded hover:bg-gray-400 mr-3
-            leading-5
-          " onClick={load}>
-            ↻
-        </button>
-        <Link className="
-          bg-blue-600 text-white p-3 
-          rounded hover:bg-blue-400
-          " to="create">
-          Create a Post
-        </Link>
-      </header>
-
-      <div className="mt-3">
-        <div className="mb-2">
-          <label htmlFor="search" className="font-bold">Search:</label>
-          <input className="border p-2 border-gray-500 w-full" 
-            id="search" type="text" value={search} 
-            onInput={onSearch} />
-        </div>
-
-        {info.data.length > 0 && (
-          <table className="border-2 border-black">
-            <thead>
-            <tr className="border border-gray-700">
-              <th className="border p-2 cursor-pointer" onClick={() => onSort('id')}>
-                <span>ID</span>
-                {sortOrder.sort === 'id' && (
-                  <span>{ sortOrder.sortDir }</span>
-                )}
-              </th>
-              <th className="border p-2 cursor-pointer" onClick={() => onSort('title')}>
-                <span>Title</span>
-                {sortOrder.sort === 'title' && (
-                  <span>{ sortOrder.sortDir }</span>
-                )}
-              </th>
-              <th className="border p-2 cursor-pointer" onClick={() => onSort('author')}>
-                <span>Author</span>
-                {sortOrder.sort === 'author' && (
-                  <span>{ sortOrder.sortDir }</span>
-                )}
-              </th>
-              <th className="border p-2 text-center" colSpan="2">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            {info.data.map(post => (
-              <tr key={post.id}>
-                <td className="p-2 border text-gray-600 text-center">{ post.id }</td>
-                <td className="p-2 border">
-                  <Link className="text-blue-400" to={`${post.id}/show`}>
-                    { post.title }
-                  </Link>
-                </td>
-                <td className="p-2 border">{ post.author }</td>
-                <td className="p-2 border">
-                  <Link className="bg-yellow-500 text-white p-2 rounded" to={`${post.id}/edit`}>
-                    Edit
-                  </Link>
-                </td>
-                <td className="p-2 border">
-                  <Link className="bg-red-500 text-white p-2 rounded" to={`${post.id}/delete`}>
-                    Delete
-                  </Link>
-                </td>  
-              </tr>
-            ))}
-            </tbody>
-        </table>
-        )}
-        
-        {info.metadata && info.metadata.total > 0 && (
+      <div className="mt-5 flex justify-center">
+        <ShowLoading loading={loading}>
           <div>
-            <div className="mt-2 flex flex-row justify-center">
-              <Link onClick={(ev) => onClickLink(ev, info.metadata.links.first.active)} 
-                className={createClassNames(info.metadata.links.first.active)}
-                to={info.metadata.links.first.to}>&lt;&lt; First</Link> | 
-              
-              <Link onClick={(ev) => onClickLink(ev, info.metadata.links.previous.active)}
-                className={createClassNames(info.metadata.links.previous.active)}
-                to={info.metadata.links.previous.to}>&lt; Previous</Link> | 
-              
-              {info.metadata.links.pages.map((page) => (
-                <div key={page.value}>
-                  <Link onClick={(ev) => onClickLink(ev, page.active)}  
-                    className={createClassNames(page.active)}
-                    to={page.to}> { page.value } </Link> |         
-                </div>  
-              ))}
-              
-              <Link onClick={(ev) => onClickLink(ev, info.metadata.links.next.active)}
-                className={createClassNames(info.metadata.links.next.active)} 
-                to={info.metadata.links.next.to}>Next &gt;</Link> | 
-              
-              <Link onClick={(ev) => onClickLink(ev, info.metadata.links.last.active)}
-                className={createClassNames(info.metadata.links.last.active)} 
-                to={info.metadata.links.last.to}>Last &gt;&gt;</Link>
-            </div>
-            <div className="mt-2 flex flex-row justify-center items-center">
-              <label htmlFor="inputLimit"
-                className="font-medium mr-3">Posts per page:</label>
-              <input id="inputLimit"
-                className="border p-2 border-gray-500 w-16"
-                type="number" min={1} max={30} value={limit} 
-                onInput={onChangeLimit} />
+            <header className="text-right">
+              <button
+                className="
+                bg-gray-600 text-white p-3 
+                  rounded hover:bg-gray-400 mr-3
+                  leading-5
+                "
+                onClick={load}
+              >
+                ↻
+              </button>
+              <Link
+                className="
+                bg-blue-600 text-white p-3 
+                  rounded hover:bg-blue-400
+                "
+                to="create"
+              >
+                Create a Post
+              </Link>
+            </header>
+
+            <div className="mt-3">
+              <div className="mb-2">
+                <label htmlFor="search" className="font-bold">
+                  Search:
+                </label>
+                <input
+                  className="border p-2 border-gray-500 w-full"
+                  id="search"
+                  type="text"
+                  value={search}
+                  onInput={onSearch}
+                />
+              </div>
+
+              {info.data.length > 0 && (
+                <table className="border-2 border-black">
+                  <thead>
+                    <tr className="border border-gray-700">
+                      <th
+                        className="border p-2 cursor-pointer"
+                        onClick={() => onSort("id")}
+                      >
+                        <span>ID</span>
+                        {sortOrder.sort === "id" && (
+                          <span>{sortOrder.sortDir}</span>
+                        )}
+                      </th>
+                      <th
+                        className="border p-2 cursor-pointer"
+                        onClick={() => onSort("title")}
+                      >
+                        <span>Title</span>
+                        {sortOrder.sort === "title" && (
+                          <span>{sortOrder.sortDir}</span>
+                        )}
+                      </th>
+                      <th
+                        className="border p-2 cursor-pointer"
+                        onClick={() => onSort("author")}
+                      >
+                        <span>Author</span>
+                        {sortOrder.sort === "author" && (
+                          <span>{sortOrder.sortDir}</span>
+                        )}
+                      </th>
+                      <th className="border p-2 text-center" colSpan="2">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {info.data.map((post) => (
+                      <tr key={post.id}>
+                        <td className="p-2 border text-gray-600 text-center">
+                          {post.id}
+                        </td>
+                        <td className="p-2 border">
+                          <Link
+                            className="text-blue-400"
+                            to={`${post.id}/show`}
+                          >
+                            {post.title}
+                          </Link>
+                        </td>
+                        <td className="p-2 border">{post.author}</td>
+                        <td className="p-2 border">
+                          <Link
+                            className="bg-yellow-500 text-white p-2 rounded"
+                            to={`${post.id}/edit`}
+                          >
+                            Edit
+                          </Link>
+                        </td>
+                        <td className="p-2 border">
+                          <Link
+                            className="bg-red-500 text-white p-2 rounded"
+                            to={`${post.id}/delete`}
+                          >
+                            Delete
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+
+              {info.metadata && info.metadata.total > 0 && (
+                <div>
+                  <div className="mt-2 flex flex-row justify-center">
+                    <Link
+                      onClick={(ev) =>
+                        onClickLink(ev, info.metadata.links.first.active)
+                      }
+                      className={createClassNames(
+                        info.metadata.links.first.active
+                      )}
+                      to={info.metadata.links.first.to}
+                    >
+                      &lt;&lt; First
+                    </Link>{" "}
+                    |
+                    <Link
+                      onClick={(ev) =>
+                        onClickLink(ev, info.metadata.links.previous.active)
+                      }
+                      className={createClassNames(
+                        info.metadata.links.previous.active
+                      )}
+                      to={info.metadata.links.previous.to}
+                    >
+                      &lt; Previous
+                    </Link>{" "}
+                    |
+                    {info.metadata.links.pages.map((page) => (
+                      <div key={page.value}>
+                        <Link
+                          onClick={(ev) => onClickLink(ev, page.active)}
+                          className={createClassNames(page.active)}
+                          to={page.to}
+                        >
+                          {" "}
+                          {page.value}{" "}
+                        </Link>{" "}
+                        |
+                      </div>
+                    ))}
+                    <Link
+                      onClick={(ev) =>
+                        onClickLink(ev, info.metadata.links.next.active)
+                      }
+                      className={createClassNames(
+                        info.metadata.links.next.active
+                      )}
+                      to={info.metadata.links.next.to}
+                    >
+                      Next &gt;
+                    </Link>{" "}
+                    |
+                    <Link
+                      onClick={(ev) =>
+                        onClickLink(ev, info.metadata.links.last.active)
+                      }
+                      className={createClassNames(
+                        info.metadata.links.last.active
+                      )}
+                      to={info.metadata.links.last.to}
+                    >
+                      Last &gt;&gt;
+                    </Link>
+                  </div>
+                  <div className="mt-2 flex flex-row justify-center items-center">
+                    <label htmlFor="inputLimit" className="font-medium mr-3">
+                      Posts per page:
+                    </label>
+                    <input
+                      id="inputLimit"
+                      className="border p-2 border-gray-500 w-16"
+                      type="number"
+                      min={1}
+                      max={30}
+                      value={limit}
+                      onInput={onChangeLimit}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-        )}
+        </ShowLoading>
       </div>
     </div>
-  )
+  );
 }
 
 export default List;
