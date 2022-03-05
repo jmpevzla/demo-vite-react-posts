@@ -222,9 +222,9 @@ function List() {
                 </td>
                 <td className="p-2 border">{ post.author }</td>
                 <td className="p-2 border">
-                  <a className="bg-yellow-300 text-white p-2 rounded" href={`${post.id}/edit`}>
+                  <Link className="bg-yellow-500 text-white p-2 rounded" to={`${post.id}/edit`}>
                     Edit
-                  </a>
+                  </Link>
                 </td>
                 <td className="p-2 border">
                   <Link className="bg-red-500 text-white p-2 rounded" to={`${post.id}/delete`}>

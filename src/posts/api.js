@@ -124,3 +124,16 @@ export async function deletePost(id) {
     return { data: null, err }
   }
 }
+
+export async function editPost(id, data) {
+  try {
+    const res = await axios.put(`/posts/${id}`, data)
+
+    return {
+      data: res.data
+    }
+  } catch(err) {
+    console.error(err)
+    return { data: null, err }
+  }
+}

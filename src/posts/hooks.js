@@ -33,11 +33,10 @@ const defMessage = 'Post Invalid'
  * 
  * @param {String | Number} id 
  * @param {(id: Number, data?: Object) => Promise<{ data: Object, err?: Object}>} apiPost 
- * @param {{data?: Object, mode: 'GET' | 'CHANGE', errInvalid?: String, err404?: String}} options
+ * @param {{mode: 'GET' | 'CHANGE', errInvalid?: String, err404?: String}} options
  * @returns 
  */
 export function usePost(id, apiPost, {
-  data,
   mode = 'GET',
   errInvalid = defMessage,
   err404 = defMessage
@@ -80,7 +79,7 @@ export function usePost(id, apiPost, {
     return true
   }
 
-  async function doPost() {
+  async function doPost(data = undefined) {
     if (!await checkPostId(id)) return
     const res = await apiPost(id, data)
     if (!await checkPostResult(res)) return
