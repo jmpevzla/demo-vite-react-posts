@@ -1,8 +1,8 @@
-# Demo Vite x React
+# Demo: Vite - React - Posts
 
 - A [Vite](https://vitejs.dev/) (Next Generation Frontend Tooling) with react template project
 
-## A Crud Post example with rest-server (json-server)
+## A Crud Posts example with rest-server (json-server)
 
 route:
 > /posts
