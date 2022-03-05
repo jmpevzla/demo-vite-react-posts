@@ -14,10 +14,10 @@ export function useReload() {
   return [reload, doReload]
 }
 
-function useGoBack(replace = true) {
+export function useGoBack() {
   const navigate = useNavigate()
 
-  function goBack() {
+  function goBack(replace = true) {
     navigate('..', {
       replace
     })
@@ -32,11 +32,13 @@ const defMessage = 'Post Invalid'
 /**
  * 
  * @param {String | Number} id 
- * @param {(id: Number) => Promise<{ data: Object, err?: Object}>} getPost 
- * @param {{errInvalid?: String, err404?: String}} options
+ * @param {(id: Number, data?: Object) => Promise<{ data: Object, err?: Object}>} apiPost 
+ * @param {{data?: Object, mode: 'GET' | 'CHANGE', errInvalid?: String, err404?: String}} options
  * @returns 
  */
-export function usePost(id, getPost, {
+export function usePost(id, apiPost, {
+  data,
+  mode = 'GET',
   errInvalid = defMessage,
   err404 = defMessage
 } = {}) {
@@ -59,24 +61,33 @@ export function usePost(id, getPost, {
   async function checkPostResult(res) {
     if (res.data === null) {
       const err = res.err
-      if (err.response.status === 404) {
-        await postInvalid(err404)
-      } else {
-        await postInvalid(err.message)
+      switch(err.response.status) {
+        case 404:
+          await postInvalid(err404)
+          break;
+        default:
+          switch(mode) {
+            case 'GET':
+              await postInvalid(err.message)
+              break;
+            case 'CHANGE':
+              await Swal.fire('Error', err.message, 'error')
+              break;
+          }  
       }
       return false
     }
     return true
   }
 
-  async function doGetPost() {
+  async function doPost() {
     if (!await checkPostId(id)) return
-    const res = await getPost(id)
+    const res = await apiPost(id, data)
     if (!await checkPostResult(res)) return
     return res
   }
 
   return {
-    doGetPost
+    doPost
   }
 }

@@ -111,3 +111,16 @@ export async function getPost(id) {
     return { data: null, err }
   }
 }
+
+export async function deletePost(id) {
+  try {
+    const res = await axios.delete(`/posts/${id}`)
+
+    return {
+      data: res.data
+    }
+  } catch(err) {
+    console.error(err)
+    return { data: null, err }
+  }
+}

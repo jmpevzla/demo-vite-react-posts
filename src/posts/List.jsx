@@ -227,9 +227,9 @@ function List() {
                   </a>
                 </td>
                 <td className="p-2 border">
-                  <a className="bg-red-500 text-white p-2 rounded" href={`${post.id}/delete`}>
+                  <Link className="bg-red-500 text-white p-2 rounded" to={`${post.id}/delete`}>
                     Delete
-                  </a>
+                  </Link>
                 </td>  
               </tr>
             ))}
