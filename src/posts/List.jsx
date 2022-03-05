@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react"
+import React, { useEffect, useState, useCallback, useContext } from "react"
 import { useNavigate, Link } from 'react-router-dom'
 import classNames from "classnames"
 import { debounce } from 'lodash'
@@ -7,10 +7,12 @@ import Swal from 'sweetalert2'
 import { ShowLoading } from './Components'
 import { useReload } from './hooks'
 import { createQueryString, defaultLimit } from './utils'
-import { getPosts } from "./api";
+import { getPosts } from "./api"
+import { Context } from './Context'
 
 function List() {
   const navigate = useNavigate()
+  const [ctx, setCtx] = useContext(Context)
   const [loading, setLoading] = useState(false)
   const [search, setSearch] = useState('')
   const [sortOrder, setSortOrder] = useState({
@@ -184,6 +186,11 @@ function List() {
         <ShowLoading loading={loading}>
           <div>
             <header className="text-right">
+              {ctx.lastPost.title !== '' && 
+                <p className="inline mr-3">
+                  Last Post: <span className="font-bold">{ctx.lastPost.title}</span>
+                </p>
+              }
               <button
                 className="
                 bg-gray-600 text-white p-3 

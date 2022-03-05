@@ -5,8 +5,10 @@ import { useFormik } from 'formik'
 import { getPost, editPost } from './api'
 import { usePost, useGoBack } from './hooks'
 import { ShowLoading, ShowProcessing } from './Components'
+import { useChangeTitleCtx } from './Context'
 
 function Edit() {
+  const changeTitleCtx = useChangeTitleCtx()
   const [loading, setLoading] = useState(false)
   const [editing, setEditing] = useState(false)
   
@@ -23,6 +25,7 @@ function Edit() {
       const res = await doEditPost(values)
       setEditing(false)
       if (res) {
+        changeTitleCtx(values.title)
         goBack()
       }
     }
@@ -46,6 +49,7 @@ function Edit() {
       const res = await doGetPost()
       if (res) {
         setPost(res.data)
+        changeTitleCtx(res.data.title)
         setLoading(false)
       }
     }

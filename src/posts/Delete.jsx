@@ -4,8 +4,10 @@ import { Helmet } from 'react-helmet-async'
 import { getPost, deletePost } from './api'
 import { usePost, useGoBack } from './hooks'
 import { PostContent, ShowLoading, ShowProcessing } from './Components'
+import { useChangeTitleCtx } from './Context'
 
 function Delete() {
+  const changeTitleCtx = useChangeTitleCtx()
   const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [post, setPost] = useState({
@@ -38,8 +40,9 @@ function Delete() {
       // document.title = title
       setLoading(true)
       const res = await doGetPost()
-      if (res) { 
+      if (res) {
         setPost(res.data)
+        changeTitleCtx(res.data.title)
         setLoading(false)
       }
     }

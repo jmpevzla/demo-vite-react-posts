@@ -1,12 +1,14 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { useFormik } from 'formik'
 import { createPost } from './api'
 import { usePost, useGoBack } from './hooks'
 import { ShowProcessing } from './Components'
+import { useChangeTitleCtx } from './Context'
 
 function Create() {
+  const changeTitleCtx = useChangeTitleCtx()
   const [creating, setCreating] = useState(false)
   
   const formik = useFormik({
@@ -19,6 +21,7 @@ function Create() {
       const res = await doCreatePost(values)
       setCreating(false)
       if (res) {
+        changeTitleCtx(values.title)
         goBack()
       }
     }
@@ -33,6 +36,10 @@ function Create() {
   const onCancel = async () => {
     goBack(false)
   }
+
+  useEffect(() => {
+    changeTitleCtx('')
+  }, [])
 
   return (
     <main className="p-1 text-center">

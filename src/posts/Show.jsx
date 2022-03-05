@@ -4,8 +4,10 @@ import { Helmet } from 'react-helmet-async'
 import { getPost } from './api'
 import { usePost } from './hooks'
 import { ShowLoading, PostContent } from './Components'
+import { useChangeTitleCtx } from './Context'
 
 function Show() {
+  const changeTitleCtx = useChangeTitleCtx()
   const [loading, setLoading] = useState(false)
   const [post, setPost] = useState({
     id: 0,
@@ -24,6 +26,7 @@ function Show() {
       const res = await doGetPost()
       if (res) {
         setPost(res.data)
+        changeTitleCtx(res.data.title)
         setLoading(false)
       }
     }
