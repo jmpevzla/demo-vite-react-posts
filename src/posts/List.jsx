@@ -5,7 +5,7 @@ import { debounce } from 'lodash'
 import { useReload } from './hooks'
 import { createQueryString, defaultLimit } from './utils'
 import { getPosts } from "./api";
-
+import { Helmet } from 'react-helmet-async';
 
 function List() {
   const navigate = useNavigate()
@@ -166,6 +166,9 @@ function List() {
 
   return (
     <div>
+      <Helmet>
+        <title>My Posts!</title>
+      </Helmet>
       <header className="mt-5 text-right">
         <a className="
           bg-blue-600 text-white p-3 
@@ -213,9 +216,9 @@ function List() {
               <tr key={post.id}>
                 <td className="p-2 border text-gray-600 text-center">{ post.id }</td>
                 <td className="p-2 border">
-                  <a className="text-blue-400" href={`${post.id}/show`}>
+                  <Link className="text-blue-400" to={`${post.id}/show`}>
                     { post.title }
-                  </a>
+                  </Link>
                 </td>
                 <td className="p-2 border">{ post.author }</td>
                 <td className="p-2 border">

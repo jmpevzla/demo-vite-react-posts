@@ -8,6 +8,8 @@ axios.defaults.headers.common = {
   'no-auth': 1
 }
 
+axios.defaults.baseURL = 'http://localhost:4000'
+
 export async function getPosts({ 
   search = null, 
   sort = null, 
@@ -16,7 +18,7 @@ export async function getPosts({
   limit = defaultLimit
 } = {}) {
   try {
-    const res = await axios.get('http://localhost:4000/posts', {
+    const res = await axios.get('/posts', {
       params: {
         q: search,
         _sort: sort,
@@ -94,5 +96,18 @@ export async function getPosts({
     Swal.fire('Error', err.message, 'error')
     console.error(err)
     return [[], null]
+  }
+}
+
+export async function getPost(id) {
+  try {
+    const res = await axios.get(`/posts/${id}`)
+    return {
+      data: res.data
+    }
+  } catch(err) {
+    // Swal.fire('Error', err.message, 'error')
+    console.error(err)
+    return { data: null, err }
   }
 }

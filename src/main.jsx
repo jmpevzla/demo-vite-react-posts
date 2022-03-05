@@ -2,11 +2,12 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import 'sweetalert2/dist/sweetalert2.min.css'
 import './index.css'
+import { HelmetProvider } from 'react-helmet-async'
 import {
   BrowserRouter,
   Routes,
   Route, 
-} from "react-router-dom";
+} from "react-router-dom"
 
 import App from './App'
 
@@ -21,18 +22,20 @@ import PostsDelete from './posts/Delete'
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/posts" element={<Layout />}>
-          <Route index element={<PostsList />} />
-          <Route path="create" element={<PostsCreate />} />
-          <Route path=":id/show" element={<PostsShow />} />
-          <Route path=":id/edit" element={<PostsEdit />} />
-          <Route path=":id/delete" element={<PostsDelete />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <HelmetProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/posts" element={<Layout />}>
+            <Route index element={<PostsList />} />
+            <Route path="create" element={<PostsCreate />} />
+            <Route path=":id/show" element={<PostsShow />} />
+            <Route path=":id/edit" element={<PostsEdit />} />
+            <Route path=":id/delete" element={<PostsDelete />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </HelmetProvider>
   </React.StrictMode>,
   document.getElementById('root')
 )
